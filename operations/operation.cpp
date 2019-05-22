@@ -2,47 +2,135 @@
 #include <iostream>
 #include <string>
 #include <vector>
+#include "searching.h"
+#include "remove.h"
+#include "digit.h"
 using namespace std;
-
-bool Digit(string equation)
-{
-    for (int i = 0; i < equation.length(); i++)
-    {
-        if (!(equation[i] >= '0' && equation[i] <= '9'))
-            return false;
-    }
-    return true;
-}
 
 Operation *buildFromEquation(string equation)
 {
     int position = equation.length() - 1;
+    int positionsTotal[7] = {
+        equation.find('^'),
+        equation.find('*'),
+        equation.find('/'),
+        equation.find('-'),
+        equation.find('+'),
+        equation.find('('),
+        equation.find(')')};
 
-    int newPositionPow = equation.find('^');
-    int newPositionMult = equation.find('*');
-    int newPositionDiv = equation.find('/');
-    int newPositionSubs = equation.find('-');
-    int newPositionPlus = equation.find('+');
-    if (equation[newPositionPow] != -1)
+    if (positionsTotal[5] == -1 && positionsTotal[6] == -1)
     {
-        cout << equation[newPositionPow] << endl;
+        if (positionsTotal[4] != -1)
+        {
+            if (searchOperators(equation, '+', position))
+            {
+                string rightExpression = equation.substr(0, position);
+                string leftExpression = equation.substr(position + 1);
+                return new adition(buildFromEquation(rightExpression), buildFromEquation(leftExpression));
+            }
+        }
+        if (positionsTotal[3] != -1)
+        {
+            if (searchOperators(equation, '-', position))
+            {
+                string rightExpression = equation.substr(0, position);
+                string leftExpression = equation.substr(position + 1);
+                return new substraction(buildFromEquation(rightExpression), buildFromEquation(leftExpression));
+            }
+        }
+        if (positionsTotal[1] != -1)
+        {
+            if (searchOperators(equation, '*', position))
+            {
+                string rightExpression = equation.substr(0, position);
+                string leftExpression = equation.substr(position + 1);
+                return new multiply(buildFromEquation(rightExpression), buildFromEquation(leftExpression));
+            }
+        }
+        if (positionsTotal[2] != -1)
+        {
+            if (searchOperators(equation, '/', position))
+            {
+                string rightExpression = equation.substr(0, position);
+                string leftExpression = equation.substr(position + 1);
+                return new division(buildFromEquation(rightExpression), buildFromEquation(leftExpression));
+            }
+        }
 
-        string rightExpression = equation.substr(0, position);
-        string leftExpression = equation.substr(position);
-        cout << rightExpression << endl;
-        cout << leftExpression << endl;
-        return new powNumber(buildFromEquation(rightExpression), buildFromEquation(leftExpression));
+        if (positionsTotal[0] != -1)
+        {
+            if (searchOperators(equation, '^', position))
+            {
+                string rightExpression = equation.substr(0, position);
+                string leftExpression = equation.substr(position + 1);
+                return new powNumber(buildFromEquation(rightExpression), buildFromEquation(leftExpression));
+            }
+        }
+        if (Digit(equation))
+        {
+            float numbers = strtof(equation.c_str(), 0);
+            return new factorEx(numbers);
+        }
+        else
+        {
+            equation = remove(equation);
+            return buildFromEquation(equation);
+        }
     }
-    else if (Digit(equation))
+    else
     {
-        float numbers = strtof(equation.c_str(), 0);
-        return new factorEx(numbers);
+        if (searchOperators(equation, '+', position))
+        {
+            string rightExpression = equation.substr(0, position);
+            string leftExpression = equation.substr(position + 1);
+            return new adition(buildFromEquation(rightExpression), buildFromEquation(leftExpression));
+        }
+
+        if (searchOperators(equation, '-', position))
+        {
+            string rightExpression = equation.substr(0, position);
+            string leftExpression = equation.substr(position + 1);
+            return new substraction(buildFromEquation(rightExpression), buildFromEquation(leftExpression));
+        }
+
+        if (searchOperators(equation, '*', position))
+        {
+            string rightExpression = equation.substr(0, position);
+            string leftExpression = equation.substr(position + 1);
+            return new multiply(buildFromEquation(rightExpression), buildFromEquation(leftExpression));
+        }
+
+        if (searchOperators(equation, '/', position))
+        {
+            string rightExpression = equation.substr(0, position);
+            string leftExpression = equation.substr(position + 1);
+            return new division(buildFromEquation(rightExpression), buildFromEquation(leftExpression));
+        }
+
+        if (searchOperators(equation, '^', position))
+        {
+            string rightExpression = equation.substr(0, position);
+            string leftExpression = equation.substr(position + 1);
+            return new powNumber(buildFromEquation(rightExpression), buildFromEquation(leftExpression));
+        }
+
+        if (Digit(equation))
+        {
+            float numbers = strtof(equation.c_str(), 0);
+            return new factorEx(numbers);
+        }
+        else
+        {
+            equation = remove(equation);
+            return buildFromEquation(equation);
+        }
     }
 }
 
 int main()
 {
-    string expression = "4^2";
+    string expression = "8*(-2)";
     Operation *equation = buildFromEquation(expression);
     cout << equation->operate() << endl;
     return 0;

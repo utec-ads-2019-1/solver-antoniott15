@@ -19,7 +19,6 @@ public:
     Operation(Operation *left, Operation *right) : left(left), right(right){};
     Operation(float result) : data(result){};
     static Operation *buildFromEquation(string equation);
-    static Operation *finding(char expression, string equation, int &position);
     virtual float operate() { return 0; };
 };
 class factorEx : public Operation
