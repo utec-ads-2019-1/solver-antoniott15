@@ -30,6 +30,7 @@ Operation *getOperation(char sign, string left, string right)
     {
         return new powNumber(Operation::buildFromEquation(right), Operation::buildFromEquation(left));
     }
+    return 0;
 }
 
 Operation *Operation::buildFromEquation(string equation)
@@ -60,7 +61,6 @@ Operation *Operation::buildFromEquation(string equation)
                 }
             }
         }
-
         if (Digit(equation))
         {
             float numbers = strtof(equation.c_str(), 0);
@@ -95,11 +95,12 @@ Operation *Operation::buildFromEquation(string equation)
             return Operation::buildFromEquation(equation);
         }
     }
+    return 0;
 }
 
 int main()
 {
-    string expression = "8*-2";
+    string expression = "2+++++++3";
 
     cout << expression << endl;
     Operation *equation = Operation::buildFromEquation(expression);
