@@ -131,6 +131,8 @@ Operation *buildFromEquation(string equation)
 int main()
 {
     string expression = "8*(-2)";
+
+    cout << expression << endl;
     Operation *equation = buildFromEquation(expression);
     cout << equation->operate() << endl;
     return 0;

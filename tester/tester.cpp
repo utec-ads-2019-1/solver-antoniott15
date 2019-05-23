@@ -9,7 +9,7 @@ void Tester::execute()
         "7/4*((2+-+--8)*2)+3",
         "2+(3)",
         "7/4*((1+2)^4*2)+3",
-        "7*-1",
+        "7*(-1)",
         "1-2*5/2+1-2^4+1",
         "19+-+++-++++++9",
         "((7*3)/4+6*(3^2)/2)*(-1)",
@@ -30,7 +30,7 @@ void Tester::execute()
         -86,
         -32310.75*/
     };
-
+    
     const unsigned int size = sizeof(equations) / sizeof(string);
     for (int i = 0; i < size; ++i)
     {
