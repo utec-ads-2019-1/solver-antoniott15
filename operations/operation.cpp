@@ -5,40 +5,12 @@
 #include "searching.h"
 #include "remove.h"
 #include "digit.h"
-#include <map>
-
 using namespace std;
-
-Operation *getOperation(char sign, string left, string right)
-{
-    if (sign == '+')
-    {
-        return new adition(Operation::buildFromEquation(right), Operation::buildFromEquation(left));
-    }
-    else if (sign == '-')
-    {
-        return new substraction(Operation::buildFromEquation(right), Operation::buildFromEquation(left));
-    }
-    else if (sign == '*')
-    {
-        return new multiply(Operation::buildFromEquation(right), Operation::buildFromEquation(left));
-    }
-    else if (sign == '/')
-    {
-        return new division(Operation::buildFromEquation(right), Operation::buildFromEquation(left));
-    }
-    else if (sign == '^')
-    {
-        return new powNumber(Operation::buildFromEquation(right), Operation::buildFromEquation(left));
-    }
-}
 
 Operation *buildFromEquation(string equation)
 {
-    char signs[5] = {'+', '-', '/', '*', '^'};
-
     int position = equation.length() - 1;
-    int positionsTotal[7] = {
+    size_t positionsTotal[7] = {
         equation.find('^'),
         equation.find('*'),
         equation.find('/'),
@@ -49,19 +21,52 @@ Operation *buildFromEquation(string equation)
 
     if (positionsTotal[5] == -1 && positionsTotal[6] == -1)
     {
-        for (int i = 0; i < 5; i++)
+        if (positionsTotal[4] != -1)
         {
-            if (positionsTotal[i] != -1)
+            if (searchOperators(equation, '+', position))
             {
-                if (searchOperators(equation, signs[i], position))
-                {
-                    string rightExpression = equation.substr(0, position);
-                    string leftExpression = equation.substr(position + 1);
-                    return getOperation(signs[i], leftExpression, rightExpression);
-                }
+                string rightExpression = equation.substr(0, position);
+                string leftExpression = equation.substr(position + 1);
+                return new adition(buildFromEquation(rightExpression), buildFromEquation(leftExpression));
+            }
+        }
+        if (positionsTotal[3] != -1)
+        {
+            if (searchOperators(equation, '-', position))
+            {
+                string rightExpression = equation.substr(0, position);
+                string leftExpression = equation.substr(position + 1);
+                return new substraction(buildFromEquation(rightExpression), buildFromEquation(leftExpression));
+            }
+        }
+        if (positionsTotal[1] != -1)
+        {
+            if (searchOperators(equation, '*', position))
+            {
+                string rightExpression = equation.substr(0, position);
+                string leftExpression = equation.substr(position + 1);
+                return new multiply(buildFromEquation(rightExpression), buildFromEquation(leftExpression));
+            }
+        }
+        if (positionsTotal[2] != -1)
+        {
+            if (searchOperators(equation, '/', position))
+            {
+                string rightExpression = equation.substr(0, position);
+                string leftExpression = equation.substr(position + 1);
+                return new division(buildFromEquation(rightExpression), buildFromEquation(leftExpression));
             }
         }
 
+        if (positionsTotal[0] != -1)
+        {
+            if (searchOperators(equation, '^', position))
+            {
+                string rightExpression = equation.substr(0, position);
+                string leftExpression = equation.substr(position + 1);
+                return new powNumber(buildFromEquation(rightExpression), buildFromEquation(leftExpression));
+            }
+        }
         if (Digit(equation))
         {
             float numbers = strtof(equation.c_str(), 0);
@@ -75,14 +80,39 @@ Operation *buildFromEquation(string equation)
     }
     else
     {
-        for (int i = 0; i < 5; i++)
+        if (searchOperators(equation, '+', position))
         {
-            if (searchOperators(equation, signs[i], position))
-            {
-                string rightExpression = equation.substr(0, position);
-                string leftExpression = equation.substr(position + 1);
-                return getOperation(signs[i], leftExpression, rightExpression);
-            }
+            string rightExpression = equation.substr(0, position);
+            string leftExpression = equation.substr(position + 1);
+            return new adition(buildFromEquation(rightExpression), buildFromEquation(leftExpression));
+        }
+
+        if (searchOperators(equation, '-', position))
+        {
+            string rightExpression = equation.substr(0, position);
+            string leftExpression = equation.substr(position + 1);
+            return new substraction(buildFromEquation(rightExpression), buildFromEquation(leftExpression));
+        }
+
+        if (searchOperators(equation, '*', position))
+        {
+            string rightExpression = equation.substr(0, position);
+            string leftExpression = equation.substr(position + 1);
+            return new multiply(buildFromEquation(rightExpression), buildFromEquation(leftExpression));
+        }
+
+        if (searchOperators(equation, '/', position))
+        {
+            string rightExpression = equation.substr(0, position);
+            string leftExpression = equation.substr(position + 1);
+            return new division(buildFromEquation(rightExpression), buildFromEquation(leftExpression));
+        }
+
+        if (searchOperators(equation, '^', position))
+        {
+            string rightExpression = equation.substr(0, position);
+            string leftExpression = equation.substr(position + 1);
+            return new powNumber(buildFromEquation(rightExpression), buildFromEquation(leftExpression));
         }
 
         if (Digit(equation))
