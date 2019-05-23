@@ -100,7 +100,7 @@ Operation *Operation::buildFromEquation(string equation)
 
 int main()
 {
-    string expression = "2++)+)+(++(+3)";
+    string expression = "2++)+)+(++(+*3)";
 
     cout << expression << endl;
     Operation *equation = Operation::buildFromEquation(expression);
