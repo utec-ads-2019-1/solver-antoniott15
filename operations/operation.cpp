@@ -8,25 +8,25 @@
 
 using namespace std;
 
-Operation *getOperation(char sign, string left, string right)
+Operation *getOperation(char operators, string left, string right)
 {
-    if (sign == '+')
+    if (operators == '+')
     {
         return new adition(Operation::buildFromEquation(right), Operation::buildFromEquation(left));
     }
-    else if (sign == '-')
+    else if (operators == '-')
     {
         return new substraction(Operation::buildFromEquation(right), Operation::buildFromEquation(left));
     }
-    else if (sign == '*')
+    else if (operators == '*')
     {
         return new multiply(Operation::buildFromEquation(right), Operation::buildFromEquation(left));
     }
-    else if (sign == '/')
+    else if (operators == '/')
     {
         return new division(Operation::buildFromEquation(right), Operation::buildFromEquation(left));
     }
-    else if (sign == '^')
+    else if (operators == '^')
     {
         return new powNumber(Operation::buildFromEquation(right), Operation::buildFromEquation(left));
     }
@@ -35,7 +35,7 @@ Operation *getOperation(char sign, string left, string right)
 
 Operation *Operation::buildFromEquation(string equation)
 {
-    char signs[5] = {'+', '-', '*', '/', '^'};
+    char operatorss[5] = {'+', '-', '*', '/', '^'};
 
     int position = equation.length() - 1;
     int positionsTotal[7] = {
@@ -53,11 +53,11 @@ Operation *Operation::buildFromEquation(string equation)
         {
             if (positionsTotal[i] != -1)
             {
-                if (searchOperators(equation, signs[i], position))
+                if (searchOperators(equation, operatorss[i], position))
                 {
                     string rightExpression = equation.substr(0, position);
                     string leftExpression = equation.substr(position + 1);
-                    return getOperation(signs[i], leftExpression, rightExpression);
+                    return getOperation(operatorss[i], leftExpression, rightExpression);
                 }
             }
         }
@@ -76,11 +76,11 @@ Operation *Operation::buildFromEquation(string equation)
     {
         for (int i = 0; i < 5; i++)
         {
-            if (searchOperators(equation, signs[i], position))
+            if (searchOperators(equation, operatorss[i], position))
             {
                 string rightExpression = equation.substr(0, position);
                 string leftExpression = equation.substr(position + 1);
-                return getOperation(signs[i], leftExpression, rightExpression);
+                return getOperation(operatorss[i], leftExpression, rightExpression);
             }
         }
 
@@ -100,7 +100,7 @@ Operation *Operation::buildFromEquation(string equation)
 
 int main()
 {
-    string expression = "2+++++++3";
+    string expression = "2++)+)+(++(+3)";
 
     cout << expression << endl;
     Operation *equation = Operation::buildFromEquation(expression);
